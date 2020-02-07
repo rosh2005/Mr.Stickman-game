@@ -1,21 +1,15 @@
 from tkinter import *
 import random
 import time
-#Py2EXE mustnt forget to convert it
-#for x in range(0, 100)
+#Py2EXE
 print("Hi!")
-for x in range(0, 105, 5):
-    print("loading %d%% " % x)
-print("Good Luck")
-
-#TIMER
 t1 = time.time()
+for x in range(0, 10):
+    print(x)
 t2 = time.time()
-
-#for x in range(0, 1):
-    #print("it took %s seconds" %(t1-t2))
-#time.sleep(10)
-
+print('it loaded in %s seconds' %(t1-t2))
+#TIMER
+import time
 class Game:
     def __init__(self):
         self.tk = Tk()
@@ -31,10 +25,10 @@ class Game:
         self.bg = PhotoImage(file="background.gif")
         w = self.bg.width()
         h = self.bg.height()
-        for x in range(0, 2, 5):
+        for x in range(0, 5):
             for y in range(0, 5):
                 self.canvas.create_image(x * w, y * h, \
-                            image=self.bg, anchor='nw')
+                                         image=self.bg, anchor='nw')
         self.sprites = []
         self.running = True
 
@@ -57,6 +51,7 @@ class Coords:
         self.x2 = x2
         self.y2 = y2
     
+
 def within_x(co1, co2):
     if (co1.x1 > co2.x1 and co1.x1 < co2.x2) \
             or (co1.x2 > co2.x1 and co1.x2 < co2.x2) \
@@ -75,21 +70,18 @@ def within_y(co1, co2):
     else:
         return False
 
+
 def collided_left(co1, co2):
     #print("left")
-    #self.setOpen 
     if within_y(co1, co2):
         if co1.x1 <= co2.x2 and co1.x1 >= co2.x1:
-            print("the collided_left works")
             return True
     return False
-    
 
 def collided_right(co1, co2):
     #print("right")
     if within_y(co1, co2):
-        if co1.x2 >= co2.x1 and co1.x2 <= co2.x2:
-            print("the collided_right works")
+        if co1.x2 <= co2.x1 and co1.x2 >= co2.x2:
             return True
     return False
 
@@ -97,7 +89,6 @@ def collided_top(co1, co2):
     #print("top")
     if within_x(co1, co2):
         if co1.y1 <= co2.y2 and co1.y1 >= co2.y1:
-            #print("it works_collided_top")
             return True
     return False
 
@@ -106,7 +97,6 @@ def collided_bottom(y, co1, co2):
     if within_x(co1, co2):
         y_calc = co1.y2 + y
         if y_calc >= co2.y1 and y_calc <= co2.y2:
-            #print("it works_collided_bottom")
             return True
     return False 
 
@@ -125,24 +115,12 @@ class PlatformSprite(Sprite):
         Sprite.__init__(self, game)
         self.photo_image = photo_image
         self.image = game.canvas.create_image(x, y, \
-                            image=self.photo_image, anchor='nw')
+                                              image=self.photo_image, anchor='nw')
         self.coordinates = Coords(x, y, x + width, y + height)
 
 class StickFigureSprite(Sprite):
-#I've added this:
-    def __init__(collided_left, self.y, self.x, setOpen):
-        if self.y and self.x < 60:
-    def setOpen(self):
-        self.isOpen = True
-        self.game.canvas.itemconfig(self.image, \
-                                  image=self.photo_image_open)
-                
-#It ends here
     def __init__(self, game):
         Sprite.__init__(self, game)
-        #self.image_door = [
-        #    PhotoImage(file="door2.gif")
-        #    ]
         self.images_left = [
             PhotoImage(file="figure-L1.gif"),
             PhotoImage(file="figure-L2.gif"),
@@ -165,7 +143,6 @@ class StickFigureSprite(Sprite):
         game.canvas.bind_all('<KeyPress-Left>', self.turn_left)
         game.canvas.bind_all('<KeyPress-Right>', self.turn_right)
         game.canvas.bind_all('<KeyPress-Up>', self.jump)
-        
 
     def turn_left(self, evt):
         #print("left")
@@ -174,7 +151,6 @@ class StickFigureSprite(Sprite):
 
     def turn_right(self, evt):
         #print("right")
-        door.toggleOpen()
         if self.y == 0:
             self.x = 2
 
@@ -184,6 +160,7 @@ class StickFigureSprite(Sprite):
             self.y = -3
             self.jump_count = 0
         
+
     def animate(self):
         #print("animate")
         if self.x != 0 and self.y == 0:
@@ -197,17 +174,17 @@ class StickFigureSprite(Sprite):
         if self.x < 0:
             if self.y !=0:
                 self.game.canvas.itemconfig(self.image, \
-                        image=self.images_left[2])
+                                            image=self.images_left[2])
             else:
                 self.game.canvas.itemconfig(self.image, \
-                        image=self.images_left[self.current_image])
+                                            image=self.images_left[self.current_image])
         elif self.x > 0:
             if self.y !=0:
                 self.game.canvas.itemconfig(self.image, \
-                        image=self.images_right[2])
+                                            image=self.images_right[2])
             else:
                 self.game.canvas.itemconfig(self.image, \
-                        image=self.images_right[self.current_image])
+                                            image=self.images_right[self.current_image])
 
     def coords(self):
         xy = self.game.canvas.coords(self.image)
@@ -223,12 +200,12 @@ class StickFigureSprite(Sprite):
         self.animate()
         # The value of y if negative tracks speed upward
         if self.y < 0:
-            self.jump_count -=1
+            self.jump_count +=1
             if self.jump_count > 20:
                 # Make the sprite fall down again
                 self.y = 4
         if self.y > 0:
-            self.jump_count += 1
+            self.jump_count -= 1
         co = self.coords()
         left = True
         right = True
@@ -257,17 +234,11 @@ class StickFigureSprite(Sprite):
                 self.y = -self.y
                 top = False
             if bottom and self.y > 0 and collided_bottom(self.y, \
-                                                    co, sprite_co):
-                #I added this in:
-                if left and self.y < 0 and collided_left(co, sprite_co):
-                    self.x = -self.x
-                    left = False
-                if right and self.x > 0 and collided_right(co, sprite_co):
-                    self.x = sprite_co.x1 - co.x2
-                if self.x < 0:
-                    self.x = 0
-                right = False
-                #It ends here
+                                                         co, sprite_co):
+                self.y = sprite_co.y1 - co.y2
+                if self.y < 0:
+                    self.y = 0
+                bottom = False
                 top = False
             if bottom and falling and self.y == 0 \
                    and co.y2 < self.game.canvas_height \
@@ -288,35 +259,18 @@ class StickFigureSprite(Sprite):
             self.y = 4
         self.game.canvas.move(self.image, self.x, self.y)
         
+
+
 class DoorSprite(Sprite):
-    #print("doorsprite works")
-    def __init__(self, game, photo_image_closed, photo_image_open, \
-                 x, y, width, height):
+    def __init__(self, game, photo_image, x, y, width, height):
         Sprite.__init__(self, game)
-        self.photo_image_closed = photo_image_closed
-        self.photo_image_open = photo_image_open
+        self.photo_image = photo_image
         self.image = game.canvas.create_image(x, y, \
-                                 image=self.photo_image_closed, anchor='nw')        
+                                              image=self.photo_image, anchor='nw')
         self.coordinates = Coords(x, y, x + (width / 2), y + height)
         self.endgame = True
-        self.isOpen = False
-        
-    def setOpen(self):
-        self.isOpen = True
-        self.game.canvas.itemconfig(self.image, \
-                                    image=self.photo_image_open)
-    def setClosed(self):
-        self.isOpen = False
-        self.game.canvas.itemconfig(self.image, \
-                                    image=self.photo_image_closed)
-    def toggleOpen(self):
-        if self.isOpen:
-            self.setClosed()
-        else:
-            self.setOpen()
-        print("Door is now open(%d)" % self.isOpen)
-        #if self.endgame = True
-        #print("it took %s seconds" %(t1-t2))
+
+
 
 def within_y(co1, co2):
     if (co1.y1 > co2.y1 and co1.y1 < co2.y2) \
@@ -326,7 +280,10 @@ def within_y(co1, co2):
         return True
     else:
         return False
+
+#LEVEL 2
     
+
 g = Game()
 platform1 = PlatformSprite(g, PhotoImage(file="platform1.gif"), \
                            0, 480, 100, 10)
@@ -348,8 +305,6 @@ platform9 = PlatformSprite(g, PhotoImage(file="platform3.gif"), \
                            170, 250, 32, 10)
 platform10 = PlatformSprite(g, PhotoImage(file="platform3.gif"), \
                            230, 200, 32, 10)
-door = DoorSprite(g, PhotoImage(file="door2.gif"), PhotoImage(file="door1.gif"),
-                                              45, 450, 40, 35)
 g.sprites.append(platform1)
 g.sprites.append(platform2)
 g.sprites.append(platform3)
@@ -360,6 +315,7 @@ g.sprites.append(platform7)
 g.sprites.append(platform8)
 g.sprites.append(platform9)
 g.sprites.append(platform10)
+door = DoorSprite(g, PhotoImage(file="door1.gif"), 45, 30, 40, 35)
 g.sprites.append(door)
 sf = StickFigureSprite(g)
 g.sprites.append(sf)
